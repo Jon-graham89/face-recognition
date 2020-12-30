@@ -1,5 +1,6 @@
 .main {
 	text-align: center;
+	margin-bottom: 10%;
 }
 .center {
 	display: flex;
@@ -13,4 +14,9 @@
 	bottom: 0;
 	left: 0;
 	z-index: -1;
+}
+
+.push {
+	margin: 7%;
+	padding: 0 15%;
 }
