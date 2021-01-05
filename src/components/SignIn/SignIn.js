@@ -46,7 +46,7 @@ const SignIn = (props) => (
 					<a
 						href="#0"
 						className="f6 link dim black db"
-						onClick={() => props.submitForm("register")}
+						onClick={() => props.registerForm("register")}
 					>
 						Register
 					</a>

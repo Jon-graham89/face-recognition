@@ -3,13 +3,11 @@ import React from "react";
 import Navigation from "./components/Navigation/Navigation";
 import Logo from "./components/Logo/Logo";
 import ImageLinkForm from "./components/ImageLinkForm/ImageLinkForm";
-import Rank from "./components/Rank/Rank";
+// import Rank from "./components/Rank/Rank";
 import Particles from "react-particles-js";
 import FaceRecognition from "./components/FaceRecognition/FaceRecognition";
 import SignIn from "./components/SignIn/SignIn";
 import Register from "./components/Register/Register";
-// import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
-// import Clarifai from "clarafai";
 
 const Clarifai = require("clarifai");
 
@@ -117,10 +115,6 @@ class App extends React.Component {
 	routeChangeHandler = (route) => {
 		this.setState({
 			route: route,
-			userinput: {
-				username: "",
-				password: "",
-			},
 		});
 	};
 
@@ -154,11 +148,12 @@ class App extends React.Component {
 					{/* <Particles className="particles" /> */}
 
 					{/* <Navigation signOut={this.signOutHandler} /> */}
-					{/* <Logo /> */}
+					<Logo />
 					<SignIn
 						changeUser={this.usernameHandler}
 						changePass={this.passwordHandler}
 						submitForm={this.signInHandler}
+						registerForm={this.routeChangeHandler}
 					/>
 				</div>
 			);
@@ -168,8 +163,9 @@ class App extends React.Component {
 					{/* <Particles className="particles" /> */}
 
 					<Navigation signOut={this.routeChangeHandler} />
-					{/* <Logo /> */}
-					<Rank />
+					<Logo />
+					{/* <Rank /> */}
+					{"currently only detecting 1 face"}
 					<ImageLinkForm
 						inputChange={this.onInputChangeHandler}
 						onSubmit={this.onSubmitHandler}
@@ -183,8 +179,8 @@ class App extends React.Component {
 		} else if (this.state.route === "register") {
 			display = (
 				<div>
-					{/* <Particles className="particles" />
-					<Logo /> */}
+					{/* <Particles className="particles" /> */}
+					<Logo />
 					{/* <Navigation signOut={this.signOutHandler} /> */}
 
 					<Register
@@ -195,8 +191,7 @@ class App extends React.Component {
 				</div>
 			);
 		}
-		//if email.value === username && password.value === password
-		//route to new page with everything
+
 		return (
 			<div className="main">
 				{/* <Particles className="particles" />
@@ -218,7 +213,7 @@ class App extends React.Component {
 					box={this.state.box}
 				/> */}
 				<Particles className="particles" />
-				<Logo />
+
 				{display}
 			</div>
 		);
