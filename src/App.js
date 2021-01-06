@@ -24,7 +24,7 @@ class App extends React.Component {
 			input: "",
 			outputImg: "",
 			imgUrl: "",
-			box: {},
+			box: [],
 			users: [
 				{ id: "000", username: "jgraham@opex.com", password: "password" },
 				{ id: "001", username: "lovong@opex.com", password: "password1" },
@@ -49,19 +49,21 @@ class App extends React.Component {
 	}
 
 	calculateFaceLocation = (data) => {
-		const clarafaiFace =
-			data.outputs[0].data.regions[0].region_info.bounding_box;
 		const image = document.getElementById("outputImage");
-		console.log(image.width, image.height);
 		const width = Number(image.width);
 		const height = Number(image.height);
-		console.log(clarafaiFace);
-		return {
-			leftcol: clarafaiFace.left_col * width,
-			toprow: clarafaiFace.top_row * height,
-			rightcol: width - clarafaiFace.right_col * width,
-			bottomrow: height - clarafaiFace.bottom_row * height,
-		};
+
+		const clarFaces = data.outputs[0].data.regions.map((dp, i) => {
+			let face = dp.region_info.bounding_box;
+			return {
+				leftcol: face.left_col * width,
+				toprow: face.top_row * height,
+				rightcol: width - face.right_col * width,
+				bottomrow: height - face.bottom_row * height,
+			};
+		});
+
+		return clarFaces;
 	};
 
 	displayBoxHandler = (box) => {
@@ -79,9 +81,6 @@ class App extends React.Component {
 			.predict("d02b4508df58432fbb84e800597b8959", this.state.imgUrl)
 			.then((response) => {
 				this.displayBoxHandler(this.calculateFaceLocation(response));
-				// this.setState({
-				// 	input: response.rawData.outputs[0].data.regions,
-				// });
 			})
 			.catch((error) => console.log(error));
 		this.setState({
@@ -130,14 +129,6 @@ class App extends React.Component {
 		} else {
 			alert("something went wrong");
 		}
-		// if (
-		// 	this.state.users[0].username === this.state.userinput.username &&
-		// 	this.state.users[0].password === this.state.userinput.password
-		// ) {
-		// 	this.setState({ route: route });
-		// } else {
-		// 	alert("something went wrong");
-		// }
 	};
 
 	render() {
@@ -165,7 +156,7 @@ class App extends React.Component {
 					<Navigation signOut={this.routeChangeHandler} />
 					<Logo />
 					{/* <Rank /> */}
-					{"currently only detecting 1 face"}
+
 					<ImageLinkForm
 						inputChange={this.onInputChangeHandler}
 						onSubmit={this.onSubmitHandler}
@@ -194,24 +185,6 @@ class App extends React.Component {
 
 		return (
 			<div className="main">
-				{/* <Particles className="particles" />
-				
-				<Navigation />
-				<Logo />
-				<SignIn
-					changeUser={this.usernameHandler}
-					changePass={this.passwordHandler}
-					submitForm={this.submitFormHandler}
-				/>
-				<Rank />
-				<ImageLinkForm
-					inputChange={this.onInputChangeHandler}
-					onSubmit={this.onSubmitHandler}
-				/>
-				<FaceRecognition
-					outputImg={this.state.outputImg}
-					box={this.state.box}
-				/> */}
 				<Particles className="particles" />
 
 				{display}
