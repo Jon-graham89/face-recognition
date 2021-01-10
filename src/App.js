@@ -15,8 +15,6 @@ const app = new Clarifai.App({
 	apiKey: "eea810b65864447c9ac8eb2fe6d540e2",
 });
 
-console.log(app.models);
-
 class App extends React.Component {
 	constructor() {
 		super();
@@ -106,10 +104,12 @@ class App extends React.Component {
 		});
 	};
 
-	submitFormHandler = () => {
-		console.log(this.state.userinput);
-		// this.setState({ route: "signedin" });
-	};
+	registerUser = () => {};
+
+	// submitFormHandler = () => {
+	// 	console.log(this.state.userinput);
+
+	// };
 
 	routeChangeHandler = (route) => {
 		this.setState({
@@ -136,9 +136,6 @@ class App extends React.Component {
 		if (this.state.route === "signin") {
 			display = (
 				<div>
-					{/* <Particles className="particles" /> */}
-
-					{/* <Navigation signOut={this.signOutHandler} /> */}
 					<Logo />
 					<SignIn
 						changeUser={this.usernameHandler}
@@ -151,8 +148,6 @@ class App extends React.Component {
 		} else if (this.state.route === "home") {
 			display = (
 				<div>
-					{/* <Particles className="particles" /> */}
-
 					<Navigation signOut={this.routeChangeHandler} />
 					<Logo />
 					{/* <Rank /> */}
@@ -170,9 +165,7 @@ class App extends React.Component {
 		} else if (this.state.route === "register") {
 			display = (
 				<div>
-					{/* <Particles className="particles" /> */}
 					<Logo />
-					{/* <Navigation signOut={this.signOutHandler} /> */}
 
 					<Register
 						changeUser={this.usernameHandler}
