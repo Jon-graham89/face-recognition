@@ -3,48 +3,60 @@ import React from "react";
 import Navigation from "./components/Navigation/Navigation";
 import Logo from "./components/Logo/Logo";
 import ImageLinkForm from "./components/ImageLinkForm/ImageLinkForm";
-// import Rank from "./components/Rank/Rank";
+import Rank from "./components/Rank/Rank";
 import Particles from "react-particles-js";
 import FaceRecognition from "./components/FaceRecognition/FaceRecognition";
 import SignIn from "./components/SignIn/SignIn";
 import Register from "./components/Register/Register";
 
+//create security for this apikey - needs to go to backend, can it be created safe with hash?
 const Clarifai = require("clarifai");
 
 const app = new Clarifai.App({
 	apiKey: "eea810b65864447c9ac8eb2fe6d540e2",
 });
 
+const initialState = {
+	input: "",
+	outputImg: "",
+	imgUrl: "",
+	box: [],
+	isSignedIn: false,
+	user: {
+		id: "",
+		name: "",
+		email: "",
+		entries: 0,
+		joined: "",
+	},
+	route: "signin",
+	userinput: {
+		username: "",
+		password: "",
+	},
+	userSubmit: {
+		username: "",
+		password: "",
+	},
+};
+
 class App extends React.Component {
 	constructor() {
 		super();
-		this.state = {
-			input: "",
-			outputImg: "",
-			imgUrl: "",
-			box: [],
-			users: [
-				{ id: "000", username: "jgraham@opex.com", password: "password" },
-				{ id: "001", username: "lovong@opex.com", password: "password1" },
-				{ id: "002", username: "lgreen@opex.com", password: "password2" },
-				{ id: "003", username: "jongraham@opex.com", password: "password3" },
-				{
-					id: "004",
-					username: "jonathangraham@opex.com",
-					password: "password4",
-				},
-			],
-			route: "signin",
-			userinput: {
-				username: "",
-				password: "",
-			},
-			userSubmit: {
-				username: "",
-				password: "",
-			},
-		};
+		this.state = initialState;
 	}
+
+	loadUser = (data) => {
+		this.setState({
+			user: {
+				id: data.id,
+				name: data.name,
+				email: data.email,
+				entries: data.entries,
+				joined: data.joined,
+			},
+		});
+	};
 
 	calculateFaceLocation = (data) => {
 		const image = document.getElementById("outputImage");
@@ -78,57 +90,39 @@ class App extends React.Component {
 		app.models
 			.predict("d02b4508df58432fbb84e800597b8959", this.state.imgUrl)
 			.then((response) => {
+				if (response) {
+					this.setState({
+						outputImg: this.state.imgUrl,
+					});
+					fetch("http://localhost:3000/image", {
+						method: "put",
+						headers: { "Content-Type": "application/json" },
+						body: JSON.stringify({
+							id: this.state.user.id,
+						}),
+					})
+						.then((response) => response.json())
+						.then((count) => {
+							this.setState(Object.assign(this.state.user, { entries: count }));
+						});
+				}
 				this.displayBoxHandler(this.calculateFaceLocation(response));
 			})
+
 			.catch((error) => console.log(error));
-		this.setState({
-			outputImg: this.state.imgUrl,
-		});
 	};
 
-	usernameHandler = (event) => {
-		this.setState({
-			userinput: {
-				username: event.target.value,
-				password: this.state.userinput.password,
-			},
-		});
-	};
-
-	passwordHandler = (event) => {
-		this.setState({
-			userinput: {
-				username: this.state.userinput.username,
-				password: event.target.value,
-			},
-		});
-	};
-
-	registerUser = () => {};
-
-	// submitFormHandler = () => {
-	// 	console.log(this.state.userinput);
-
-	// };
+	// registerUser = () => {};
 
 	routeChangeHandler = (route) => {
+		if (route === "signin") {
+			this.setState(initialState);
+		} else if (route === "home") {
+			this.setState({ isSignedIn: true });
+		}
 		this.setState({
 			route: route,
 		});
-	};
-
-	signInHandler = (route, event) => {
-		let check = this.state.users.filter((user) => {
-			return (
-				user.username === this.state.userinput.username &&
-				user.password === this.state.userinput.password
-			);
-		});
-		if (check.length === 1) {
-			this.setState({ route: route });
-		} else {
-			alert("something went wrong");
-		}
 	};
 
 	render() {
@@ -138,19 +132,17 @@ class App extends React.Component {
 				<div>
 					<Logo />
 					<SignIn
-						changeUser={this.usernameHandler}
-						changePass={this.passwordHandler}
-						submitForm={this.signInHandler}
-						registerForm={this.routeChangeHandler}
+						onRouteChange={this.routeChangeHandler}
+						loadUser={this.loadUser}
 					/>
 				</div>
 			);
 		} else if (this.state.route === "home") {
 			display = (
 				<div>
-					<Navigation signOut={this.routeChangeHandler} />
+					<Navigation signOut={this.routeChangeHandler}>Sign Out</Navigation>
 					<Logo />
-					{/* <Rank /> */}
+					<Rank entries={this.state.user.entries} name={this.state.user.name} />
 
 					<ImageLinkForm
 						inputChange={this.onInputChangeHandler}
@@ -165,12 +157,12 @@ class App extends React.Component {
 		} else if (this.state.route === "register") {
 			display = (
 				<div>
+					<Navigation signOut={this.routeChangeHandler}>Return</Navigation>
 					<Logo />
 
 					<Register
-						changeUser={this.usernameHandler}
-						changePass={this.passwordHandler}
-						submitForm={this.routeChangeHandler}
+						onRouteChange={this.routeChangeHandler}
+						loadUser={this.loadUser}
 					/>
 				</div>
 			);

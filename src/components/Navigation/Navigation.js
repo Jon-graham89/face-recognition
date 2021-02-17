@@ -6,7 +6,7 @@ const Navigation = (props) => (
 			className="f3 link dim black underline pa3 pointer"
 			onClick={() => props.signOut("signin")}
 		>
-			Sign Out
+			{props.children}
 		</p>
 	</nav>
 );
