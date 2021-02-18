@@ -94,7 +94,7 @@ class App extends React.Component {
 					this.setState({
 						outputImg: this.state.imgUrl,
 					});
-					fetch("https://shielded-cliffs-66198.herokuapp.com:3000/image", {
+					fetch("https://shielded-cliffs-66198.herokuapp.com/image", {
 						method: "put",
 						headers: { "Content-Type": "application/json" },
 						body: JSON.stringify({
