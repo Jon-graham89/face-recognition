@@ -6,8 +6,10 @@ class SignIn extends React.Component {
 		this.state = {
 			signInEmail: "",
 			signInPassword: "",
+			signInError: "",
 		};
 	}
+
 	onEmailChange = (event) => {
 		this.setState({ signInEmail: event.target.value });
 	};
@@ -30,7 +32,9 @@ class SignIn extends React.Component {
 				if (user.id) {
 					this.props.loadUser(user);
 					this.props.onRouteChange("home");
+					this.setState({ signInError: "" });
 				}
+				this.setState({ signInError: "Email and/or Password is incorrect" });
 			});
 	};
 
@@ -65,6 +69,7 @@ class SignIn extends React.Component {
 									onChange={this.onPasswordChange}
 								/>
 							</div>
+							<div style={{ color: "#800000" }}>{this.state.signInError}</div>
 						</fieldset>
 						<div className="">
 							<input

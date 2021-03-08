@@ -65,6 +65,7 @@ class App extends React.Component {
 
 		const clarFaces = data.outputs[0].data.regions.map((dp, i) => {
 			let face = dp.region_info.bounding_box;
+
 			return {
 				leftcol: face.left_col * width,
 				toprow: face.top_row * height,
