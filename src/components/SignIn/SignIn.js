@@ -1,5 +1,5 @@
 import React from "react";
-
+import "../Register/Register.css";
 class SignIn extends React.Component {
 	constructor(props) {
 		super(props);
@@ -69,7 +69,7 @@ class SignIn extends React.Component {
 									onChange={this.onPasswordChange}
 								/>
 							</div>
-							<div style={{ color: "#800000" }}>{this.state.signInError}</div>
+							<div className="ErrorMessageStyle">{this.state.signInError}</div>
 						</fieldset>
 						<div className="">
 							<input
